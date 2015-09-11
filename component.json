@@ -1,0 +1,12 @@
+{
+    "name": "activestack",
+    "version": "0.0.1",
+    "main": [
+        "app/css/activestack",
+        "app/img/sprites.gif",
+        "app/js/activestack"
+    ],
+    "dependencies": {
+        "jquery": ">=2.1.1"
+    }
+}
