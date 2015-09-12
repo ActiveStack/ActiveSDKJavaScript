@@ -5,14 +5,14 @@
     "appPath": "app",
     "description": "Active Web Service Layer for ActiveStack JavaScript Clients",
     "keywords": [
-        "image",
-        "video",
-        "gallery"
+        "ActiveStack",
+        "SDK",
+        "Angular",
+        "AngularJS",
+        "JavaScript"
     ],
     "homepage": "https://github.com/ActiveStack/active-client-sdk-javascript",
-    "author": {
-        "name": "Richard Sparrow"
-    },
+
     "repository": {
         "type": "git",
         "url": "git://github.com/ActiveStack/active-client-sdk-javascript.git"
@@ -36,7 +36,8 @@
         "tests"
     ],
     "authors": [
-        "Richard Sparrow <YOUR_MAIL@gmail.com>"
+        {"name": "Jonathan Samples", "homepage":"https://github.com/jonnysamps"},
+        {"name": "Richard Sparrow", "homepage":"https://github.com/rsparrow"}
     ],
     "license": "MIT"
 }
