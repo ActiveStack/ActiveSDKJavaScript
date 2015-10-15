@@ -11,14 +11,13 @@
         "JavaScript"
     ],
     "homepage": "https://github.com/ActiveStack/active-client-sdk-javascript",
-
     "repository": {
         "type": "git",
         "url": "git://github.com/ActiveStack/active-client-sdk-javascript.git"
     },
     "bugs": "https://github.com/ActiveStack/active-client-sdk-javascript/issues",
     "dependencies": {
-        "socket.io": "0.9.9",
+        "socket.io-client": "0.9.9",
         "q": "0.9.2",
         "angularjs":"1.x"
     },
