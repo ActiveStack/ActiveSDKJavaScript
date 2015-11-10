@@ -29,7 +29,7 @@ angular.module('ActiveStack.Client', ['ActiveStack.Config','ActiveStack.Model'],
 
             var connectDeferred = null;
             var connectTimeout = null;
-            this.connect = function() {
+             this.connect = function() {
                 connectDeferred = Q.defer();
 
                 // Set a timeout of 10 seconds.
@@ -90,9 +90,6 @@ angular.module('ActiveStack.Client', ['ActiveStack.Config','ActiveStack.Model'],
 
                 socket.on('connecting', function() {
                     console.log("ActiveStackClient:connecting");
-                });
-                socket.on('reconnect', function() {
-                    console.log("ActiveStackClient:reconnect");
                 });
                 socket.on('reconnect', function() {
                     console.log("ActiveStackClient:reconnect");

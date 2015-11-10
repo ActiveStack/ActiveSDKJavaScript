@@ -39,7 +39,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
                         .then(function(){
                             deferred.notify(2);
                             var request = {};
-                            request.cn = "com.ActiveStack.agents.auth.vo.ReauthenticationRequest";
+                            request.cn = "com.percero.agents.auth.vo.ReauthenticationRequest";
                             request.regAppKey = "";
                             request.clientId = userToken.clientId;
                             request.token = userToken.token;
@@ -99,7 +99,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
                     }
                 },45000);
                 var request = {};
-                request.cn = "com.ActiveStack.agents.auth.vo.AuthenticationRequest";
+                request.cn = "com.percero.agents.auth.vo.AuthenticationRequest";
                 request.deviceId = deviceId;
                 request.authProvider = providerId;
                 request.credential = username+":"+password;
@@ -170,7 +170,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
                     }
                 },45000);
                 var request = {};
-                request.cn = "com.ActiveStack.agents.auth.vo.AuthenticationRequest";
+                request.cn = "com.percero.agents.auth.vo.AuthenticationRequest";
                 request.deviceId = deviceId;
                 request.authProvider = 'anonymous';
                 $log.info('Senging AuthenticationRequest');
@@ -314,7 +314,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
                     }
                 },45000);
                 var request = {};
-                request.cn = "com.ActiveStack.agents.auth.vo.AuthenticationRequest";
+                request.cn = "com.percero.agents.auth.vo.AuthenticationRequest";
                 request.credential = JSON.stringify({
                     code: oauthCode,
                     redirectUrl: this.currentOauthProvider.redirectUri
@@ -375,7 +375,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
                         .then(function(){
                             deferred.notify(2);
                             var request = {};
-                            request.cn = "com.ActiveStack.agents.auth.vo.AuthenticateOAuthAccessTokenRequest";
+                            request.cn = "com.percero.agents.auth.vo.AuthenticateOAuthAccessTokenRequest";
                             request.regAppKey = "";
                             request.clientId = userToken.clientId;
                             request.token = userToken.token;
@@ -474,7 +474,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
 
             this.findById = function(className, id, callback) {
                 var request = {};
-                request.cn = "com.ActiveStack.agents.sync.vo.FindByIdRequest";
+                request.cn = "com.percero.agents.sync.vo.FindByIdRequest";
                 request.theClassName = className;
                 request.theClassId = id;
                 request.regAppKey = "";
@@ -488,7 +488,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
 
             this.getAllByName = function(className, callback) {
                 var request = {};
-                request.cn = "com.ActiveStack.agents.sync.vo.GetAllByNameRequest";
+                request.cn = "com.percero.agents.sync.vo.GetAllByNameRequest";
                 request.theClassName = className;
                 request.regAppKey = "";
                 request.clientType = "";
@@ -506,7 +506,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
 
             this.findByExample = function(example, callback) {
                 var request = {};
-                request.cn = "com.ActiveStack.agents.sync.vo.FindByExampleRequest";
+                request.cn = "com.percero.agents.sync.vo.FindByExampleRequest";
                 request.regAppKey = "";
                 request.clientType = "";
                 request.svcOauthKey = "";
@@ -518,7 +518,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
 
             this.putObject = function(o, callback) {
                 var request = {};
-                request.cn = "com.ActiveStack.agents.sync.vo.PutRequest";
+                request.cn = "com.percero.agents.sync.vo.PutRequest";
                 request.regAppKey = "";
                 request.clientType = "";
                 request.svcOauthKey = "";
@@ -538,7 +538,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
             this.createObject = function(o, callback) {
                 o.ID = null;
                 var request = {};
-                request.cn = "com.ActiveStack.agents.sync.vo.CreateRequest";
+                request.cn = "com.percero.agents.sync.vo.CreateRequest";
                 request.regAppKey = "";
                 request.clientType = "";
                 request.svcOauthKey = "";
@@ -550,7 +550,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
 
             this.removeObject = function(o, callback) {
                 var request = {};
-                request.cn = "com.ActiveStack.agents.sync.vo.RemoveRequest";
+                request.cn = "com.percero.agents.sync.vo.RemoveRequest";
                 request.regAppKey = "";
                 request.clientType = "";
                 request.svcOauthKey = "";
@@ -578,7 +578,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
              */
             this.getChangeWatcher = function(cn, id, fieldName, params, callback) {
                 var request = {};
-                request.cn = "com.ActiveStack.agents.sync.vo.PushCWUpdateRequest";
+                request.cn = "com.percero.agents.sync.vo.PushCWUpdateRequest";
                 request.regAppKey = "";
                 request.clientType = "";
                 request.svcOauthKey = "";
@@ -597,7 +597,7 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
              */
             this.serverProcess = function(name, args, callback) {
                 var request = {};
-                request.cn = "com.ActiveStack.agents.sync.vo.RunProcessRequest";
+                request.cn = "com.percero.agents.sync.vo.RunProcessRequest";
                 request.regAppKey = "";
                 request.clientType = "";
                 request.svcOauthKey = "";
