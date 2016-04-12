@@ -1,6 +1,43 @@
 
 
-##
+# The Basics
+At the heart of the ActiveStack API are [`SyncRequest`'s](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/sync/vo/SyncRequest.java) and [`SyncResponse`'s](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/sync/vo/SyncResponse.java).  A specialized `SyncRequest` is sent to the ActiveStack Sync Engine and a `SyncResponse` is sent back the two being linked together by the `SyncResponse`.`correspondingMessageId`, which is the `ID` of the `SyncRequest`.
+
+## Login
+Login is perhaps the most complicated of the API's in that it is meant to be generic and flexible enough to handle any type of authentication (OAuth, username/password, custom, etc).  The main authentication engine is [`AuthService2`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/services/AuthService2.java).
+
+Login basically accepts some form of user credentials and returns a `UserID` and `ClientID` upon successful authentication.  The `ClientID` is the main way that ActiveStack knows who the user is and also enables a single user to be simultaneously logged in on multipled devices.
+
+A successful login returns a [`UserToken`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/vo/UserToken.java) object that contains the [`User`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/vo/User.java), `clientId`, `deviceId`, and `token` (required for reauthentication). Typically, upon successful login, the app will issue a `findByExample` request for the class that represents the user in the application.  For example, if `Person` is the class that represents the user, the app would issue a `findByExample` request with `theObject` payload:
+```
+{
+  "cn": "com.app.mo.Person",  // Or whatever the actual class name of the `Person` object is
+  "userId": <UserToken.User.ID>,  // The `UserToken`.`User`.`ID` from the `AuthenticationResponse`
+}
+```
+This should result in the `Person` object identified by that User.ID to be returned by the ActiveStack SyncEngine.
+
+### [authenticate](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/services/AuthService2.java#L47)
+- Authenticates a user by their credentials.
+  - Request: [`AuthenticationRequest`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/vo/AuthenticationRequest.java)
+  - Response: [`AuthenticationResponse`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/vo/AuthenticationResponse.java)
+  - Parameters:
+    - `authProvider`: This is the name of the auth provider that will be used for authentication.  The auth provider can either be built-in auth providers, or a custom defined auth provider.
+    - `credential`:  This is a string that represents the user's credentials.  Based on the authentication provider, this string is parsed accordingly to pull out the various parts of the credentials.
+      - Examples:
+        - [`BasicAuthCredential`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/vo/BasicAuthCredential.java): Handled by [`InMemoryAuthProvider`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/services/InMemoryAuthProvider.java)
+        - [`OAuthCredential`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/vo/OAuthCredential.java): Handled by [`GoogleAuthProvider`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/services/GoogleAuthProvider.java)
+        - AnonCredential: Handled by [`AnonAuthProvider`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/services/AnonAuthProvider.java)
+
+### [reauthenticate]()
+- Reauthenticates a user by a token (which is typically assigned upon successful authentication).
+  - Request: [`ReauthenticationRequest`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/vo/ReauthenticationRequest.java)
+  - Response: [`AuthenticationResponse`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/auth/vo/AuthenticationResponse.java)
+  - Parameters:
+    - `authProvider`: This is the name of the auth provider that will be used for authentication.  The auth provider can either be built-in auth providers, or a custom defined auth provider.
+    - `token`:  This is the string token that was returned upon successful authentication.
+
+## Core API
 
 - All `className` references assume that the corresponding class is part of the registered data model, meaning it is included in the `ActiveStack.Domain` module.
 
