@@ -1,6 +1,6 @@
 {
     "name": "activestack",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "title": "activestack",
     "description": "Active Web Service Layer for ActiveStack JavaScript Clients",
     "keywords": [
@@ -32,7 +32,7 @@
     ],
     "authors": [
         {"name": "Jonathan Samples", "homepage":"https://github.com/jonnysamps"},
-        {"name": "Richard Sparrow", "homepage":"https://github.com/rsparrow"}
+        {"name": "Richard Sparrow", "homepage":"https://github.com/rsparrow"},
         {"name": "Collin Brown", "homepage":"https://github.com/curb47"}
     ],
     "license": "MIT"
