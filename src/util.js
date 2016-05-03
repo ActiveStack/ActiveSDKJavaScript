@@ -47,7 +47,7 @@
     };
 
 
-    function PerceroEventDispatcherDecorator(o){
+    function ActiveStackEventDispatcherDecorator(o){
 
         var listeners = [];
 
@@ -70,7 +70,7 @@
     function Decorate(){};
 
     Decorate.withEventDispatcher = function(o){
-        return new PerceroEventDispatcherDecorator(o);
+        return new ActiveStackEventDispatcherDecorator(o);
     }
 
     scope.Decorate = Decorate;

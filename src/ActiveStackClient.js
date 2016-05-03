@@ -17,8 +17,6 @@ angular.module('ActiveStack.Client', ['ActiveStack.Config','ActiveStack.Model'],
             this.connected = connected;
 
             this.setCommonParams = function(params) {
-                $log.info('Setting commonParams');
-                $log.info(params);
                 commonParams = params;
             }
 
@@ -29,7 +27,7 @@ angular.module('ActiveStack.Client', ['ActiveStack.Config','ActiveStack.Model'],
 
             var connectDeferred = null;
             var connectTimeout = null;
-             this.connect = function() {
+            this.connect = function() {
                 connectDeferred = Q.defer();
 
                 // Set a timeout of 10 seconds.
@@ -39,7 +37,6 @@ angular.module('ActiveStack.Client', ['ActiveStack.Config','ActiveStack.Model'],
 
                     connectTimeout = null;
                 }, 10000);
-
 
                 socket = io.connect('http' +  (config.gatewayPort == 443 ? 's' : '') + '://' + config.gatewayIp + ':' + config.gatewayPort, {
                     'force new connection': true,
@@ -161,7 +158,7 @@ angular.module('ActiveStack.Client', ['ActiveStack.Config','ActiveStack.Model'],
                         clearLocalData = false;
                     }
                     var logoutRequest = {
-                        cn: 'com.ActiveStack.agents.sync.vo.LogoutRequest',
+                        cn: 'com.percero.agents.sync.vo.LogoutRequest',
                         pleaseDestroyClient: clearLocalData
                     };
                     this.sendRequest('logout', logoutRequest);
@@ -189,7 +186,7 @@ angular.module('ActiveStack.Client', ['ActiveStack.Config','ActiveStack.Model'],
                     payload[key] = request[key];
                 }
 
-                if (!request.hasOwnProperty('cn') || request.cn.indexOf('com.ActiveStack.agents.auth.vo') < 0) {
+                if (!request.hasOwnProperty('cn') || request.cn.indexOf('com.percero.agents.auth.vo') < 0) {
                     // These commonParams and anything in the session (which includes clientId)
                     // will override anything in the request with the same keys.
                     // Only included in non auth calls.

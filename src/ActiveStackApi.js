@@ -350,6 +350,162 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
                 return deferred.promise;
             }
 
+            this.authenticate = function(providerName, credentials){
+                providerName = providerName?providerName:"GOOGLE";
+                var providerConfig = ActiveStackConfig.oauthProviders[providerName];
+                if(!providerConfig) throw new Error("OAuth provider: "+provider+" Not supported");
+
+                var deferred = Q.defer();
+                var progress = 0;
+
+                // If we have credentials, then user new Auth
+                if (credentials) {
+                    self.connect()
+                        .then(function(){
+                            deferred.notify(++progress);
+                            self.login(providerConfig, credentials)
+                                .then(
+                                function(success){
+                                    deferred.resolve(success);
+                                },
+                                function(error){
+                                    deferred.reject(error);
+                                },
+                                function(prog){
+                                    deferred.notify(++progress);
+                                });
+                        }, function(error){
+                            deferred.reject(error);
+                        });
+                }
+                else {
+	                var uri = providerConfig.authUrl;
+	                uri = uri.replace(':redirectUri', providerConfig.redirectUri);
+	                uri = uri.replace(':appKey', providerConfig.appKey);
+
+	                console.log("AuthURI:"+uri);
+
+	                var popup = window.open(uri, "oauth", "width=1024,height=768");
+	                window.oauthCallback = function(paramString) {
+	                    // console.log("oauthCallback " + paramString);
+	                    deferred.notify(++progress);
+	                    var regex = new RegExp('code=([^&]*)');
+	                    var parts = paramString.match(regex);
+	                    if (parts) {
+	                        oauthCode = parts[1];
+	                        console.log(oauthCode);
+
+	                        self.connect()
+	                            .then(function(){
+	                                deferred.notify(++progress);
+	                                self.login(providerConfig)
+	                                    .then(
+	                                    function(success){
+	                                        deferred.resolve(success);
+	                                    },
+	                                    function(error){
+	                                        deferred.reject(error);
+	                                    },
+	                                    function(prog){
+	                                        deferred.notify(++progress);
+	                                    });
+	                            }, function(error){
+	                                deferred.reject(error);
+	                            });
+	                    } else{
+	                        deferred.reject(new Error("Missing OAuth Code from Param String"));
+	                    }
+	                    popup.close();
+	                }
+	            }
+
+                return deferred.promise;
+            }
+
+            var loginDeferred = null;
+            var loginUT = null;
+            var loginTimeout = null;
+            this.login = function(providerConfig, credentials) {
+                var deferred = loginDeferred = Q.defer();
+                loginTimeout = setTimeout(function(){
+                    if(loginDeferred) {
+                        loginDeferred.reject(new Error("Login Timed Out"));
+                        loginDeferred = null;
+                        loginUT = null;
+                        loginTimeout = null;
+                    }
+                },45000);
+                var request = {};
+
+                if (credentials) {
+	                request.cn = "com.percero.agents.auth.vo.AuthenticationRequest";
+	                request.credential = credentials;
+	                request.regAppKey = "";
+	                request.deviceId = deviceId;
+	                request.authProvider = providerConfig.name.toUpperCase();
+	                client.sendRequest("authenticate", request, function(message) {
+	                    if(deferred) deferred.notify(1);
+	                    // Store the userToken in the cookie for later
+	                    if(message.result && message.accessToken){
+	                        userToken = message.result;
+	                        userToken.accessToken = message.accessToken;
+	                        self.setCookie('userToken', userToken);
+	                        client.setCommonParams({token: message.result.token,
+	                            userId: message.result.user.ID,
+	                            deviceId: message.result.deviceId,
+	                            sendAck: true});
+
+	//                deferred.resolve(userToken);
+	                        loginUT = userToken;
+	                    }
+	                    else if(message.result && message.message === "Success"){
+	                        userToken = message.result;
+	                        userToken.accessToken = message.result.token;
+	                        self.setCookie('userToken', userToken);
+	                        client.setCommonParams({token: message.result.token,
+	                            userId: message.result.user.ID,
+	                            deviceId: message.result.deviceId,
+	                            sendAck: true});
+
+	//                deferred.resolve(userToken);
+	                        loginUT = userToken;
+	                    }
+	                    else
+	                        deferred.resolve(false);
+	                });
+                }
+                else {
+	                request.cn = "com.percero.agents.auth.vo.AuthenticateOAuthCodeRequest";
+	                request.regAppKey = "";
+	                request.code = oauthCode;
+	                request.redirectUri = providerConfig.redirectUri;
+	                request.deviceId = deviceId;
+	                request.requestToken = "";
+	                request.requestSecret = "";
+	                request.authProvider = providerConfig.name.toUpperCase();
+	                client.sendRequest("authenticateOAuthCode", request, function(message) {
+	                    if(deferred) deferred.notify(1);
+	                    // Store the userToken in the cookie for later
+	                    if(message.result && message.accessToken){
+	                        userToken = message.result;
+	                        userToken.accessToken = message.accessToken;
+	                        self.setCookie('userToken', userToken);
+	                        client.setCommonParams({token: message.result.token,
+	                            userId: message.result.user.ID,
+	                            deviceId: message.result.deviceId,
+	                            sendAck: true});
+
+	//                deferred.resolve(userToken);
+	                        loginUT = userToken;
+	                    }
+	                    else
+	                        deferred.resolve(false);
+	                });
+	            }
+
+                return deferred.promise;
+            }
+
             var autoLoginDeferred = null;
             var autoLoginUT = null;
             var autoLoginTimeout = null;
@@ -473,6 +629,12 @@ angular.module('ActiveStack.Api', ['ActiveStack.Model','ActiveStack.Client','Act
             }
 
             this.findById = function(className, id, callback) {
+                if (!id) {
+                    if (callback) {
+                        callback(undefined, true);
+                    }
+                    return;
+                }
                 var request = {};
                 request.cn = "com.percero.agents.sync.vo.FindByIdRequest";
                 request.theClassName = className;
