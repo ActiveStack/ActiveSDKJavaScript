@@ -1,21 +1,29 @@
 angular.module('ActiveStack.Model', [], function($provide) {
-    $provide.factory('ActiveStackModel', function($log, ActiveStackDomain, $timeout) {
-        function ActiveStackModel() {
+    $provide.factory('ActiveStackModel', function($log, ActiveStackDomain) {
+        ActiveStackModel = function() {
             Decorate.withEventDispatcher(this);
             var self = this;
             var cache = {};
             var timeoutID = null;
+            var emitContext = [];
 
             /**
-             * Found that we needed to group the refreshes
-             * since they were happening so often.
+             * Found that we needed to queue up the refreshes
+             * since they were happening so often.  This way
+             * the data will only refresh every 200 millis
              */
-            this.notifyChanged = function() {
+            this.notifyChanged = function(context) {
                 if(!timeoutID){
+                    emitContext.push(context)
+                    var that = this;
                     timeoutID = setTimeout(function(){
-                        timeoutID = null
-                        $timeout()
-                    },50);
+                        emitContext = [];
+                        timeoutID = null;
+                        that.emit('changed');
+                    },200);
+                }
+                else{
+                    emitContext.push(context);
                 }
             }
 
@@ -33,7 +41,7 @@ angular.module('ActiveStack.Model', [], function($provide) {
                     for(var i in ActiveStackDomain[className].prototype._all){
                         var ob = ActiveStackDomain[className].prototype._all[i];
                         if(o.ID && o.ID == ob.ID)
-                            ActiveStackDomain[className].prototype._all.splice(i,1);
+                            delete ActiveStackDomain[className].prototype._all[i];
                     }
 
                     o.removeReferences();

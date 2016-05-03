@@ -6,7 +6,7 @@ See the [ActiveStack SyncEngine API documenation](https://github.com/ActiveStack
 ```json
 {
   "cn": "com.app.mo.Person",  // Or whatever the actual class name of the `Person` object is
-  "userId": <UserToken.User.ID>,  // The `UserToken`.`User`.`ID` from the `AuthenticationResponse`
+  "userId": "<UserToken.User.ID>",  // The `UserToken`.`User`.`ID` from the `AuthenticationResponse`
 }
 ```
 
@@ -46,7 +46,7 @@ See the [ActiveStack SyncEngine API documenation](https://github.com/ActiveStack
 ```
 
 ### Disconnect SyncEngine
-When a client disconnects, the ActiveStack SyncEngine expects a [`DisconnectRequest`](), which informs the SyncEngine that this client is no longer connected.
+When a client disconnects, the ActiveStack SyncEngine expects a [`DisconnectRequest`](https://github.com/ActiveStack/syncengine/blob/master/src/main/java/com/percero/agents/sync/vo/DisconnectRequest.java), which informs the SyncEngine that this client is no longer connected.
 ```json
 {
   "cn": "com.percero.agents.sync.vo.DisconnectRequest",
@@ -58,7 +58,7 @@ When a client disconnects, the ActiveStack SyncEngine expects a [`DisconnectRequ
 ```
 
 ### Disconnect Auth
-When a client disconnects, the ActiveStack SyncEngine expects a [`DisconnectRequest`](), which informs the SyncEngine that this client is no longer connected.
+When a client disconnects, the ActiveStack SyncEngine expects a [`DisconnectRequest`](https://github.com/ActiveStack/syncengine/blob/master/src/main/java/com/percero/agents/auth/vo/DisconnectRequest.java), which informs the SyncEngine that this client is no longer connected.
 ```json
 {
   "cn": "com.percero.agents.auth.vo.DisconnectRequest",
@@ -70,7 +70,7 @@ When a client disconnects, the ActiveStack SyncEngine expects a [`DisconnectRequ
 ```
 
 ### Logout
-In order to logout, a client must send a [`LogoutRequest`]() to the ActiveStack SyncEngine.
+In order to logout, a client must send a [`LogoutRequest`](https://github.com/ActiveStack/syncengine/blob/master/src/main/java/com/percero/agents/sync/vo/LogoutRequest.java) to the ActiveStack SyncEngine.
 ```json
 {
   "pleaseDestroyClient": false, // If set to true, destroys all record of this client
@@ -94,11 +94,13 @@ In order to logout, a client must send a [`LogoutRequest`]() to the ActiveStack 
 
 ### [connect](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/ConnectHandler.java)
 This connect request is NEVER seen by the client, but is handled under the hood by the ActiveStack Gateway.  It is included here for the sake of completeness.  Note that the `ConnectResponse` IS sent to the client, indicating that the client is now connected to the ActiveStack SyncEngine and can commence sending requests.
-NOTE: The `clientId`', `userId`, and `token` in this `ConnectResponse` are to be sent with every subsequent request to the ActiveStack SyncEngine
+NOTE: The `clientId`, `userId`, and `token` in this `ConnectResponse` are to be sent with every subsequent request to the ActiveStack SyncEngine.
+
+Request:
 ```json
 {
   "cn": "com.percero.agents.sync.vo.ConnectRequest",
-  "clientId": "<client)id>",
+  "clientId": "<client_id>",
   "deviceId": "<device_id>",
   "token": "<token>",
   "userId": "<user_id>"
@@ -122,7 +124,9 @@ Response:
 
 ### [reconnect](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/ReconnectHandler.java)
 When a client loses connection to ActiveStack, it can send a [`ReconnectRequest`](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/agents/sync/vo/ReconnectRequest.java) to the SyncEngine. This is to let the SyncEngine know that this client has come back online.
-NOTE: The `clientId`', `userId`, and `token` in this `ReconnectResponse` are to be sent with every subsequent request to the ActiveStack SyncEngine.  Also, a reconnect always results in a NEW client id being assigned to the client.
+NOTE: The `clientId`, `userId`, and `token` in this `ReconnectResponse` are to be sent with every subsequent request to the ActiveStack SyncEngine.  Also, a reconnect always results in a NEW client id being assigned to the client.
+
+Request:
 ```json
 {
   "cn": "com.percero.agents.sync.vo.ReconnectRequest",
@@ -130,7 +134,7 @@ NOTE: The `clientId`', `userId`, and `token` in this `ReconnectResponse` are to 
   "existingClientIds": [
     "<existing_client_id>",
     "<another_existing_client_id>",
-    "<one of these exists for every connect and reconnect>"
+    "<one of these exists for the original connect and every subsequent reconnect>"
   ],
   "clientId": "<current_client_id>",
   "deviceId": "<device_id>",
@@ -155,6 +159,7 @@ Response:
 ```
 
 ### [findById](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/FindByIdHandler.java)
+Request:
 ```json
 {
   "token": "<token>",
@@ -174,6 +179,7 @@ Response:
 ```
 
 ### [findByIds](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/FindByIdsHandler.java)
+Request:
 ```json
 {
   "token": "<token>",
@@ -203,6 +209,7 @@ Response:
 ```
 
 ### [getAllByName](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/GetAllByNameHandler.java)
+Request:
 ```json
 {
   "token": "<token>",
@@ -252,6 +259,7 @@ Response:
 ```
 
 ### [findByExample](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/FindByExampleHandler.java)
+Request:
 ```json
 {
   "token": "<token>",
@@ -309,6 +317,7 @@ Response:
 
 
 ### [putObject](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/PutObjectHandler.java)
+Request:
 ```json
 {
   "token": "<token>",
@@ -366,6 +375,7 @@ Response:
 ```
 
 ### [createObject](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/CreateObjectHandler.java)
+Request:
 ```json
 {
   "token": "<token>",
@@ -414,6 +424,7 @@ Response:
 ```
 
 ### [removeObject](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/RemoveObjectHandler.java)
+Request:
 ```json
 {
   "token": "<token>",
@@ -450,6 +461,7 @@ Response:
 ```
 
 ### [getChangeWatcher](https://github.com/ActiveStack/syncengine/blob/156ea8927fba9681f8b547662904073a45f990b1/src/main/java/com/percero/amqp/handlers/GetChangeWatcherHandler.java)
+Request:
 ```json
 {
   "token": "<token>",
@@ -508,6 +520,8 @@ Response:
   - Parameters:
     - `queryName`: The name of the process.  To use a specific Connector (such as 'HTTP' or 'SQL_PROC' for database stored procedures), prefix the operation name of the Connector name and a ":".  Example:  "HTTP:fetchDataFromHttpEndpoint"
     - `queryArguments` (optional): Any required parameters for the server process.  Typically, this is passed as some sort of map (parameterName -> parameterValue)
+
+Request:
 ```json
 {
   "queryName": "<task_name>",
@@ -538,6 +552,8 @@ Response:
 
 ### Push Updates Received
 Whenever the ActiveStack SyncEngine sends out an update, it expects to receive a [`PushUpdatesReceived`]() response from the client. This lets the ActiveStack SyncEngine know that the client has received and processed the update. The SyncEngine will continue to attempt to push the same update out to the client until the client responds with the `PushUpdatesReceived` response.
+
+Request:
 ```json
 {
   "token": "<token>",
@@ -621,6 +637,8 @@ This is really where the real-time aspect of ActiveStack comes into play.  The m
 
 ### PushUpdateResponse
 Sent whenever an object has been updated for which a client has registered to receive updates.
+
+Request:
 ```json
 {
   "cn": "com.percero.agents.sync.vo.PushUpdateResponse",
@@ -644,6 +662,8 @@ Sent whenever an object has been updated for which a client has registered to re
 
 ### DeleteUpdateResponse
 Sent whenever an object has been deleted for which a client has registered to receive updates.
+
+Request:
 ```json
 {
   "cn": "com.percero.agents.sync.vo.PushDeleteResponse",
